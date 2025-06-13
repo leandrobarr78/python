@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tabuada Personalizada</title>
+<style>
+  body {
+    font-family: Arial, sans-serif; /* Define a fonte da página */
+    margin: 20px; /* Espaçamento externo da página */
+    background: #f9f9f9; /* Cor de fundo clara */
+    color: #333; /* Cor do texto */
+  }
+  h1 {
+    text-align: center; /* Centraliza o título */
+    color: #2c3e50; /* Cor do título */
+  }
+  .container {
+    max-width: 700px; /* Largura máxima do container */
+    margin: 0 auto; /* Centraliza horizontalmente */
+    background: white; /* Fundo branco para o container */
+    padding: 20px 30px; /* Espaçamento interno */
+    border-radius: 8px; /* Bordas arredondadas */
+    box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Sombra suave */
+  }
+  nav {
+    display: flex; /* Layout flexível para os botões */
+    justify-content: center; /* Centraliza os botões */
+    margin-bottom: 20px; /* Espaçamento abaixo do menu */
+  }
+  nav button {
+    background: #3498db; /* Cor de fundo azul */
+    border: none; /* Remove borda padrão */
+    color: white; /* Cor do texto */
+    padding: 10px 15px; /* Espaçamento interno */
+    margin: 0 5px; /* Espaçamento entre botões */
+    border-radius: 4px; /* Bordas arredondadas */
+    cursor: pointer; /* Cursor de mãozinha */
+    font-weight: bold; /* Texto em negrito */
+  }
+  nav button.active {
+    background: #2980b9; /* Cor diferente para botão ativo */
+  }
+  section {
+    display: none; /* Esconde as seções por padrão */
+  }
+  section.active {
+    display: block; /* Exibe a seção ativa */
+  }
+  label {
+    display: block; /* Faz o label ocupar linha inteira */
+    margin-top: 10px; /* Espaçamento acima do label */
+    font-weight: bold; /* Texto em negrito */
+  }
+  input[type="number"], input[type="text"] {
+    width: 100%; /* Largura total do input */
+    padding: 8px; /* Espaçamento interno */
+    margin-top: 5px; /* Espaçamento acima do input */
+    box-sizing: border-box; /* Inclui padding na largura */
+    border-radius: 4px; /* Bordas arredondadas */
+    border: 1px solid #ccc; /* Borda cinza clara */
+  }
+  button.calc-btn {
+    margin-top: 15px; /* Espaçamento acima do botão */
+    background: #27ae60; /* Cor de fundo verde */
+    color: white; /* Cor do texto */
+    border: none; /* Remove borda padrão */
+    padding: 10px 15px; /* Espaçamento interno */
+    border-radius: 4px; /* Bordas arredondadas */
+    cursor: pointer; /* Cursor de mãozinha */
+    font-weight: bold; /* Texto em negrito */
+  }
+  .result {
+    margin-top: 15px; /* Espaçamento acima do resultado */
+    background: #ecf0f1; /* Fundo cinza claro */
+    padding: 10px; /* Espaçamento interno */
+    border-radius: 4px; /* Bordas arredondadas */
+    font-weight: bold; /* Texto em negrito */
+    white-space: pre-wrap; /* Mantém quebras de linha */
+  }
+  .error {
+    color: #e74c3c; /* Cor vermelha para erros */
+    font-weight: bold; /* Texto em negrito */
+    margin-top: 10px; /* Espaçamento acima do erro */
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Tabuada Personalizada</h1>
+    <nav>
+      <button class="tab-btn active" data-tab="tab1">Tabuada Padrão</button> <!-- Botão para tabuada padrão -->
+      <button class="tab-btn" data-tab="tab2">Tabuada Personalizada</button> <!-- Botão para tabuada personalizada -->
+      <button class="tab-btn" data-tab="tab3">Par ou Ímpar</button> <!-- Botão para verificação par/ímpar -->
+    </nav>
+
+    <section id="tab1" class="active">
+      <label for="num1">Digite um número:</label> <!-- Label para input número -->
+      <input type="number" id="num1" /> <!-- Input para número -->
+      <button class="calc-btn" onclick="gerarTabuadaPadrao()">Gerar Tabuada</button> <!-- Botão para gerar tabuada padrão -->
+      <div id="resultado1" class="result"></div> <!-- Área para mostrar resultado -->
+    </section>
+
+    <section id="tab2">
+      <label for="num2">Digite um número:</label> <!-- Label para input número -->
+      <input type="number" id="num2" /> <!-- Input para número -->
+      <label for="operacao2">Escolha a operação:</label> <!-- Label para seleção de operação -->
+      <select id="operacao2">
+        <option value="+">Adição (+)</option> <!-- Opção adição -->
+        <option value="-">Subtração (-)</option> <!-- Opção subtração -->
+        <option value="*">Multiplicação (*)</option> <!-- Opção multiplicação -->
+        <option value="/">Divisão (/)</option> <!-- Opção divisão -->
+      </select>
+      <label for="inicio2">Início do intervalo:</label> <!-- Label para início do intervalo -->
+      <input type="number" id="inicio2" /> <!-- Input para início do intervalo -->
+      <label for="fim2">Fim do intervalo:</label> <!-- Label para fim do intervalo -->
+      <input type="number" id="fim2" /> <!-- Input para fim do intervalo -->
+      <button class="calc-btn" onclick="gerarTabuadaPersonalizada()">Gerar Tabuada</button> <!-- Botão para gerar tabuada personalizada -->
+      <div id="resultado2" class="result"></div> <!-- Área para mostrar resultado -->
+    </section>
+
+    <section id="tab3">
+      <label for="num3">Digite um número:</label> <!-- Label para input número -->
+      <input type="number" id="num3" /> <!-- Input para número -->
+      <button class="calc-btn" onclick="verificarParImpar()">Verificar</button> <!-- Botão para verificar par ou ímpar -->
+      <div id="resultado3" class="result"></div> <!-- Área para mostrar resultado -->
+    </section>
+  </div>
+
+<script>
+  // Função para alternar abas
+  const tabs = document.querySelectorAll('.tab-btn');
+  const sections = document.querySelectorAll('section');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active')); // Remove classe active de todos os botões
+      sections.forEach(s => s.classList.remove('active')); // Remove classe active de todas as seções
+      tab.classList.add('active'); // Adiciona classe active ao botão clicado
+      document.getElementById(tab.dataset.tab).classList.add('active'); // Exibe a seção correspondente
+      clearResults(); // Limpa os resultados exibidos
+    });
+  });
+
+  // Limpa os resultados das seções
+  function clearResults() {
+    document.querySelectorAll('.result').forEach(el => el.textContent = '');
+  }
+
+  // 1. Tabuada padrão (multiplicação de 1 a 10)
+  function gerarTabuadaPadrao() {
+    const num = parseInt(document.getElementById('num1').value);
+    if (isNaN(num)) {
+      alert('Por favor, digite um número válido.');
+      return;
+    }
+    let resultado = `Tabuada de multiplicação do ${num}:\n`;
+    for (let i = 1; i <= 10; i++) {
+      resultado += `${num} x ${i} = ${num * i}\n`; // Concatena cada linha da tabuada
+    }
+    document.getElementById('resultado1').textContent = resultado; // Exibe o resultado
+  }
+
+  // 2. Tabuada personalizada com operações e intervalo
+  function gerarTabuadaPersonalizada() {
+    const num = parseInt(document.getElementById('num2').value);
+    const operacao = document.getElementById('operacao2').value;
+    const inicio = parseInt(document.getElementById('inicio2').value);
+    const fim = parseInt(document.getElementById('fim2').value);
+
+    if (isNaN(num) || isNaN(inicio) || isNaN(fim)) {
+      alert('Por favor, preencha todos os campos com números válidos.');
+      return;
+    }
+    if (inicio > fim) {
+      alert('Erro: O início deve ser menor ou igual ao fim.');
+      return;
+    }
+
+    let resultado = `Tabuada do ${num} (${operacao}):\n`;
+    for (let i = inicio; i <= fim; i++) {
+      let res;
+      switch (operacao) {
+        case '+':
+          res = num + i;
+          break;
+        case '-':
+          res = num - i;
+          break;
+        case '*':
+          res = num * i;
+          break;
+        case '/':
+          res = i !== 0 ? (num / i).toFixed(2) : 'ERRO'; // Evita divisão por zero
+          break;
+        default:
+          res = 'Operação inválida';
+      }
+      resultado += `${num} ${operacao} ${i} = ${res}\n`; // Concatena cada linha da tabuada personalizada
+    }
+    document.getElementById('resultado2').textContent = resultado; // Exibe o resultado
+  }
+
+  // 3. Verificar se o número é par ou ímpar
+  function verificarParImpar() {
+    const num = parseInt(document.getElementById('num3').value);
+    if (isNaN(num)) {
+      alert('Por favor, digite um número válido.');
+      return;
+    }
+    const resultado = num % 2 === 0 ? 'PAR' : 'ÍMPAR'; // Verifica paridade
+    document.getElementById('resultado3').textContent = `O número ${num} é ${resultado}.`; // Exibe o resultado
+  }
+</script>
+</body>
+</html>

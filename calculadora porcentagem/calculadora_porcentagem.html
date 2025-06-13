@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Calculadora de Porcentagem</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background: #f4f4f9;
+    color: #333;
+  }
+  h1 {
+    text-align: center;
+    color: #2c3e50;
+  }
+  .container {
+    max-width: 700px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  nav {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  nav button {
+    background: #3498db;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  nav button.active {
+    background: #2980b9;
+  }
+  section {
+    display: none;
+  }
+  section.active {
+    display: block;
+  }
+  label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  input[type="number"], input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    box-sizing: border-box;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+  button.calc-btn {
+    margin-top: 15px;
+    background: #27ae60;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .result {
+    margin-top: 15px;
+    background: #ecf0f1;
+    padding: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+  .error {
+    color: #e74c3c;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Calculadora de Porcentagem</h1>
+    <nav>
+      <button class="tab-btn active" data-tab="tab1">X% de um valor</button>
+      <button class="tab-btn" data-tab="tab2">Qual % X é de Y</button>
+      <button class="tab-btn" data-tab="tab3">Aumento/Redução %</button>
+      <button class="tab-btn" data-tab="tab4">Diferença % entre valores</button>
+      <button class="tab-btn" data-tab="tab5">Juros Compostos</button>
+      <button class="tab-btn" data-tab="tab6">Desconto Composto</button>
+    </nav>
+
+    <section id="tab1" class="active">
+      <label for="valor1">Valor total:</label>
+      <input type="number" id="valor1" step="any" />
+      <label for="percentual1">Porcentagem (%):</label>
+      <input type="number" id="percentual1" step="any" />
+      <button class="calc-btn" onclick="calcularXPorcento()">Calcular</button>
+      <div id="resultado1" class="result"></div>
+    </section>
+
+    <section id="tab2">
+      <label for="parte2">Valor parcial:</label>
+      <input type="number" id="parte2" step="any" />
+      <label for="total2">Valor total:</label>
+      <input type="number" id="total2" step="any" />
+      <button class="calc-btn" onclick="calcularQualPorcentagem()">Calcular</button>
+      <div id="resultado2" class="result"></div>
+    </section>
+
+    <section id="tab3">
+      <label for="valor3">Valor inicial:</label>
+      <input type="number" id="valor3" step="any" />
+      <label for="percentual3">Porcentagem de aumento/redução (%):</label>
+      <input type="number" id="percentual3" step="any" />
+      <button class="calc-btn" onclick="calcularAumentoReducao()">Calcular</button>
+      <div id="resultado3" class="result"></div>
+    </section>
+
+    <section id="tab4">
+      <label for="valor4a">Primeiro valor:</label>
+      <input type="number" id="valor4a" step="any" />
+      <label for="valor4b">Segundo valor:</label>
+      <input type="number" id="valor4b" step="any" />
+      <button class="calc-btn" onclick="calcularDiferencaPercentual()">Calcular</button>
+      <div id="resultado4" class="result"></div>
+    </section>
+
+    <section id="tab5">
+      <label for="principal5">Valor inicial (R$):</label>
+      <input type="number" id="principal5" step="any" />
+      <label for="taxa5">Taxa de juros ao período (%):</label>
+      <input type="number" id="taxa5" step="any" />
+      <label for="periodos5">Número de períodos:</label>
+      <input type="number" id="periodos5" />
+      <button class="calc-btn" onclick="calcularJurosCompostos()">Calcular</button>
+      <div id="resultado5" class="result"></div>
+    </section>
+
+    <section id="tab6">
+      <label for="preco6">Preço original (R$):</label>
+      <input type="number" id="preco6" step="any" />
+      <label for="descontos6">Descontos (% separados por espaço):</label>
+      <input type="text" id="descontos6" placeholder="Ex: 10 5 2" />
+      <button class="calc-btn" onclick="calcularDescontoComposto()">Calcular</button>
+      <div id="resultado6" class="result"></div>
+    </section>
+  </div>
+
+<script>
+  // Função para alternar abas
+  const tabs = document.querySelectorAll('.tab-btn');
+  const sections = document.querySelectorAll('section');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      sections.forEach(s => s.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.tab).classList.add('active');
+      clearResults();
+    });
+  });
+
+  function clearResults() {
+    document.querySelectorAll('.result').forEach(el => el.textContent = '');
+  }
+
+  // 1. Calcular X% de um valor
+  function calcularXPorcento() {
+    const valor = parseFloat(document.getElementById('valor1').value);
+    const percentual = parseFloat(document.getElementById('percentual1').value);
+    if (isNaN(valor) || isNaN(percentual)) {
+      alert('Por favor, preencha ambos os campos com números válidos.');
+      return;
+    }
+    const resultado = valor * (percentual / 100);
+    document.getElementById('resultado1').textContent = `${percentual}% de ${valor} = ${resultado.toFixed(2)}`;
+  }
+
+  // 2. Calcular qual % X é de Y
+  function calcularQualPorcentagem() {
+    const parte = parseFloat(document.getElementById('parte2').value);
+    const total = parseFloat(document.getElementById('total2').value);
+    if (isNaN(parte) || isNaN(total) || total === 0) {
+      alert('Por favor, preencha ambos os campos com números válidos e total diferente de zero.');
+      return;
+    }
+    const percentual = (parte / total) * 100;
+    document.getElementById('resultado2').textContent = `${parte} é ${percentual.toFixed(2)}% de ${total}`;
+  }
+
+  // 3. Aumento/Redução percentual
+  function calcularAumentoReducao() {
+    const valor = parseFloat(document.getElementById('valor3').value);
+    const percentual = parseFloat(document.getElementById('percentual3').value);
+    if (isNaN(valor) || isNaN(percentual)) {
+      alert('Por favor, preencha ambos os campos com números válidos.');
+      return;
+    }
+    let resultado;
+    if (percentual >= 0) {
+      resultado = valor * (1 + percentual / 100);
+      document.getElementById('resultado3').textContent = `${valor} + ${percentual}% = ${resultado.toFixed(2)}`;
+    } else {
+      resultado = valor * (1 - Math.abs(percentual) / 100);
+      document.getElementById('resultado3').textContent = `${valor} - ${Math.abs(percentual)}% = ${resultado.toFixed(2)}`;
+    }
+  }
+
+  // 4. Diferença percentual entre dois valores
+  function calcularDiferencaPercentual() {
+    const valor1 = parseFloat(document.getElementById('valor4a').value);
+    const valor2 = parseFloat(document.getElementById('valor4b').value);
+    if (isNaN(valor1) || isNaN(valor2) || valor1 === 0) {
+      alert('Por favor, preencha ambos os campos com números válidos e o primeiro valor diferente de zero.');
+      return;
+    }
+    const diferenca = ((valor2 - valor1) / Math.abs(valor1)) * 100;
+    if (valor2 > valor1) {
+      document.getElementById('resultado4').textContent = `Aumento de ${diferenca.toFixed(2)}% (de ${valor1} para ${valor2})`;
+    } else {
+      document.getElementById('resultado4').textContent = `Redução de ${Math.abs(diferenca).toFixed(2)}% (de ${valor1} para ${valor2})`;
+    }
+  }
+
+  // 5. Juros compostos (valor futuro)
+  function calcularJurosCompostos() {
+    const principal = parseFloat(document.getElementById('principal5').value);
+    const taxa = parseFloat(document.getElementById('taxa5').value);
+    const periodos = parseInt(document.getElementById('periodos5').value);
+    if (isNaN(principal) || isNaN(taxa) || isNaN(periodos) || periodos < 0) {
+      alert('Por favor, preencha todos os campos com valores válidos.');
+      return;
+    }
+    const taxaDecimal = taxa / 100;
+    const montante = principal * Math.pow(1 + taxaDecimal, periodos);
+    const juros = montante - principal;
+    document.getElementById('resultado5').textContent = `Valor futuro após ${periodos} períodos = R$ ${montante.toFixed(2)}\nJuros acumulados = R$ ${juros.toFixed(2)}`;
+  }
+
+  // 6. Desconto em loja (composição de descontos)
+  function calcularDescontoComposto() {
+    const preco = parseFloat(document.getElementById('preco6').value);
+    const descontosStr = document.getElementById('descontos6').value.trim();
+    if (isNaN(preco) || !descontosStr) {
+      alert('Por favor, preencha o preço e os descontos corretamente.');
+      return;
+    }
+    const descontos = descontosStr.split(/\s+/).map(d => parseFloat(d));
+    if (descontos.some(d => isNaN(d))) {
+      alert('Por favor, insira apenas números válidos nos descontos.');
+      return;
+    }
+    let final = preco;
+    descontos.forEach(d => {
+      final *= (1 - d / 100);
+    });
+    const economia = preco - final;
+    const descontoTotal = 100 * (economia / preco);
+    document.getElementById('resultado6').textContent = `Preço final: R$ ${final.toFixed(2)}\nVocê economizou: R$ ${economia.toFixed(2)}\nDesconto total: ${descontoTotal.toFixed(2)}%`;
+  }
+</script>
+</body>
+</html>

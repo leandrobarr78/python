@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Calculadora de Porcentagem</title>
+<style>
+  /* Estilo base do corpo da página */
+  body {
+    font-family: Arial, sans-serif; /* Fonte legível e comum */
+    margin: 20px; /* Espaçamento externo */
+    background: #f4f4f9; /* Cor de fundo clara */
+    color: #333; /* Cor do texto */
+  }
+  /* Estilo do título principal */
+  h1 {
+    text-align: center; /* Centraliza o texto */
+    color: #2c3e50; /* Cor azul escura */
+  }
+  /* Container principal que centraliza e estiliza o conteúdo */
+  .container {
+    max-width: 700px; /* Largura máxima */
+    margin: 0 auto; /* Centraliza horizontalmente */
+    background: white; /* Fundo branco */
+    padding: 20px 30px; /* Espaçamento interno */
+    border-radius: 8px; /* Bordas arredondadas */
+    box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Sombra suave */
+  }
+  /* Estilo da barra de navegação das abas */
+  nav {
+    display: flex; /* Layout flexível para alinhar botões */
+    justify-content: center; /* Centraliza os botões */
+    margin-bottom: 20px; /* Espaço abaixo */
+  }
+  /* Estilo dos botões das abas */
+  nav button {
+    background: #3498db; /* Azul claro */
+    border: none; /* Sem borda */
+    color: white; /* Texto branco */
+    padding: 10px 15px; /* Espaçamento interno */
+    margin: 0 5px; /* Espaçamento entre botões */
+    border-radius: 4px; /* Bordas arredondadas */
+    cursor: pointer; /* Cursor de mãozinha */
+    font-weight: bold; /* Texto em negrito */
+  }
+  /* Estilo do botão ativo (aba selecionada) */
+  nav button.active {
+    background: #2980b9; /* Azul mais escuro */
+  }
+  /* Seções das abas inicialmente escondidas */
+  section {
+    display: none; /* Esconde todas as seções */
+  }
+  /* Seção ativa (visível) */
+  section.active {
+    display: block; /* Exibe a seção ativa */
+  }
+  /* Estilo dos labels dos inputs */
+  label {
+    display: block; /* Quebra de linha */
+    margin-top: 10px; /* Espaço acima */
+    font-weight: bold; /* Negrito */
+  }
+  /* Estilo dos campos de entrada */
+  input[type="number"], input[type="text"] {
+    width: 100%; /* Largura total do container */
+    padding: 8px; /* Espaçamento interno */
+    margin-top: 5px; /* Espaço acima */
+    box-sizing: border-box; /* Inclui padding na largura */
+    border-radius: 4px; /* Bordas arredondadas */
+    border: 1px solid #ccc; /* Borda cinza clara */
+  }
+  /* Estilo dos botões de cálculo */
+  button.calc-btn {
+    margin-top: 15px; /* Espaço acima */
+    background: #27ae60; /* Verde */
+    color: white; /* Texto branco */
+    border: none; /* Sem borda */
+    padding: 10px 15px; /* Espaçamento interno */
+    border-radius: 4px; /* Bordas arredondadas */
+    cursor: pointer; /* Cursor de mãozinha */
+    font-weight: bold; /* Negrito */
+  }
+  /* Estilo da área de resultado */
+  .result {
+    margin-top: 15px; /* Espaço acima */
+    background: #ecf0f1; /* Fundo cinza claro */
+    padding: 10px; /* Espaçamento interno */
+    border-radius: 4px; /* Bordas arredondadas */
+    font-weight: bold; /* Negrito */
+    white-space: pre-line; /* Mantém quebras de linha no texto */
+  }
+  /* Estilo para mensagens de erro */
+  .error {
+    color: #e74c3c; /* Vermelho */
+    font-weight: bold; /* Negrito */
+    margin-top: 10px; /* Espaço acima */
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <!-- Título principal da calculadora -->
+    <h1>Calculadora de Porcentagem</h1>
+    <!-- Barra de navegação com botões para alternar entre as abas -->
+    <nav>
+      <button class="tab-btn active" data-tab="tab1">X% de um valor</button>
+      <button class="tab-btn" data-tab="tab2">Qual % X é de Y</button>
+      <button class="tab-btn" data-tab="tab3">Aumento/Redução %</button>
+      <button class="tab-btn" data-tab="tab4">Diferença % entre valores</button>
+      <button class="tab-btn" data-tab="tab5">Juros Compostos</button>
+      <button class="tab-btn" data-tab="tab6">Desconto Composto</button>
+    </nav>
+
+    <!-- Seção 1: Calcula X% de um valor -->
+    <section id="tab1" class="active">
+      <label for="valor1">Valor total:</label>
+      <input type="number" id="valor1" step="any" />
+      <label for="percentual1">Porcentagem (%):</label>
+      <input type="number" id="percentual1" step="any" />
+      <button class="calc-btn" onclick="calcularXPorcento()">Calcular</button>
+      <div id="resultado1" class="result"></div>
+    </section>
+
+    <!-- Seção 2: Calcula qual % X é de Y -->
+    <section id="tab2">
+      <label for="parte2">Valor parcial:</label>
+      <input type="number" id="parte2" step="any" />
+      <label for="total2">Valor total:</label>
+      <input type="number" id="total2" step="any" />
+      <button class="calc-btn" onclick="calcularQualPorcentagem()">Calcular</button>
+      <div id="resultado2" class="result"></div>
+    </section>
+
+    <!-- Seção 3: Calcula aumento ou redução percentual -->
+    <section id="tab3">
+      <label for="valor3">Valor inicial:</label>
+      <input type="number" id="valor3" step="any" />
+      <label for="percentual3">Porcentagem de aumento/redução (%):</label>
+      <input type="number" id="percentual3" step="any" />
+      <button class="calc-btn" onclick="calcularAumentoReducao()">Calcular</button>
+      <div id="resultado3" class="result"></div>
+    </section>
+
+    <!-- Seção 4: Calcula diferença percentual entre dois valores -->
+    <section id="tab4">
+      <label for="valor4a">Primeiro valor:</label>
+      <input type="number" id="valor4a" step="any" />
+      <label for="valor4b">Segundo valor:</label>
+      <input type="number" id="valor4b" step="any" />
+      <button class="calc-btn" onclick="calcularDiferencaPercentual()">Calcular</button>
+      <div id="resultado4" class="result"></div>
+    </section>
+
+    <!-- Seção 5: Calcula juros compostos -->
+    <section id="tab5">
+      <label for="principal5">Valor inicial (R$):</label>
+      <input type="number" id="principal5" step="any" />
+      <label for="taxa5">Taxa de juros ao período (%):</label>
+      <input type="number" id="taxa5" step="any" />
+      <label for="periodos5">Número de períodos:</label>
+      <input type="number" id="periodos5" />
+      <button class="calc-btn" onclick="calcularJurosCompostos()">Calcular</button>
+      <div id="resultado5" class="result"></div>
+    </section>
+
+    <!-- Seção 6: Calcula desconto composto -->
+    <section id="tab6">
+      <label for="preco6">Preço original (R$):</label>
+      <input type="number" id="preco6" step="any" />
+      <label for="descontos6">Descontos (% separados por espaço):</label>
+      <input type="text" id="descontos6" placeholder="Ex: 10 5 2" />
+      <button class="calc-btn" onclick="calcularDescontoComposto()">Calcular</button>
+      <div id="resultado6" class="result"></div>
+    </section>
+  </div>
+
+<script>
+  // Seleciona todos os botões das abas e as seções correspondentes
+  const tabs = document.querySelectorAll('.tab-btn');
+  const sections = document.querySelectorAll('section');
+
+  // Adiciona evento de clique para alternar abas
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      // Remove a classe 'active' de todos os botões e seções
+      tabs.forEach(t => t.classList.remove('active'));
+      sections.forEach(s => s.classList.remove('active'));
+      // Adiciona a classe 'active' ao botão clicado e à seção correspondente
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.tab).classList.add('active');
+      // Limpa os resultados exibidos ao trocar de aba
+      clearResults();
+    });
+  });
+
+  // Função para limpar os resultados exibidos nas seções
+  function clearResults() {
+    document.querySelectorAll('.result').forEach(el => el.textContent = '');
+  }
+
+  // 1. Calcula X% de um valor
+  function calcularXPorcento() {
+    const valor = parseFloat(document.getElementById('valor1').value);
+    const percentual = parseFloat(document.getElementById('percentual1').value);
+    // Validação dos campos para garantir que são números válidos
+    if (isNaN(valor) || isNaN(percentual)) {
+      alert('Por favor, preencha ambos os campos com números válidos.');
+      return;
+    }
+    // Cálculo da porcentagem
+    const resultado = valor * (percentual / 100);
+    // Exibe o resultado formatado com duas casas decimais
+    document.getElementById('resultado1').textContent = `${percentual}% de ${valor} = ${resultado.toFixed(2)}`;
+  }
+
+  // 2. Calcula qual % X é de Y
+  function calcularQualPorcentagem() {
+    const parte = parseFloat(document.getElementById('parte2').value);
+    const total = parseFloat(document.getElementById('total2').value);
+    // Validação dos campos e evita divisão por zero
+    if (isNaN(parte) || isNaN(total) || total === 0) {
+      alert('Por favor, preencha ambos os campos com números válidos e total diferente de zero.');
+      return;
+    }
+    // Cálculo da porcentagem
+    const percentual = (parte / total) * 100;
+    // Exibe o resultado formatado
+    document.getElementById('resultado2').textContent = `${parte} é ${percentual.toFixed(2)}% de ${total}`;
+  }
+
+  // 3. Calcula aumento ou redução percentual
+  function calcularAumentoReducao() {
+    const valor = parseFloat(document.getElementById('valor3').value);
+    const percentual = parseFloat(document.getElementById('percentual3').value);
+    // Validação dos campos
+    if (isNaN(valor) || isNaN(percentual)) {
+      alert('Por favor, preencha ambos os campos com números válidos.');
+      return;
+    }
+    let resultado;
+    // Se percentual positivo, calcula aumento
+    if (percentual >= 0) {
+      resultado = valor * (1 + percentual / 100);
+      document.getElementById('resultado3').textContent = `${valor} + ${percentual}% = ${resultado.toFixed(2)}`;
+    } else {
+      // Se percentual negativo, calcula redução
+      resultado = valor * (1 - Math.abs(percentual) / 100);
+      document.getElementById('resultado3').textContent = `${valor} - ${Math.abs(percentual)}% = ${resultado.toFixed(2)}`;
+    }
+  }
+
+  // 4. Calcula diferença percentual entre dois valores
+  function calcularDiferencaPercentual() {
+    const valor1 = parseFloat(document.getElementById('valor4a').value);
+    const valor2 = parseFloat(document.getElementById('valor4b').value);
+    // Validação dos campos e evita divisão por zero
+    if (isNaN(valor1) || isNaN(valor2) || valor1 === 0) {
+      alert('Por favor, preencha ambos os campos com números válidos e o primeiro valor diferente de zero.');
+      return;
+    }
+    // Cálculo da diferença percentual
+    const diferenca = ((valor2 - valor1) / Math.abs(valor1)) * 100;
+    // Exibe se houve aumento ou redução
+    if (valor2 > valor1) {
+      document.getElementById('resultado4').textContent = `Aumento de ${diferenca.toFixed(2)}% (de ${valor1} para ${valor2})`;
+    } else {
+      document.getElementById('resultado4').textContent = `Redução de ${Math.abs(diferenca).toFixed(2)}% (de ${valor1} para ${valor2})`;
+    }
+  }
+
+  // 5. Calcula juros compostos (valor futuro)
+  function calcularJurosCompostos() {
+    const principal = parseFloat(document.getElementById('principal5').value);
+    const taxa = parseFloat(document.getElementById('taxa5').value);
+    const periodos = parseInt(document.getElementById('periodos5').value);
+    // Validação dos campos
+    if (isNaN(principal) || isNaN(taxa) || isNaN(periodos) || periodos < 0) {
+      alert('Por favor, preencha todos os campos com valores válidos.');
+      return;
+    }
+    // Converte taxa percentual para decimal
+    const taxaDecimal = taxa / 100;
+    // Calcula o montante usando fórmula de juros compostos
+    const montante = principal * Math.pow(1 + taxaDecimal, periodos);
+    const juros = montante - principal;
+    // Exibe o valor futuro e os juros acumulados
+    document.getElementById('resultado5').textContent = `Valor futuro após ${periodos} períodos = R$ ${montante.toFixed(2)}\nJuros acumulados = R$ ${juros.toFixed(2)}`;
+  }
+
+  // 6. Calcula desconto composto (composição de vários descontos)
+  function calcularDescontoComposto() {
+    const preco = parseFloat(document.getElementById('preco6').value);
+    const descontosStr = document.getElementById('descontos6').value.trim();
+    // Validação dos campos
+    if (isNaN(preco) || !descontosStr) {
+      alert('Por favor, preencha o preço e os descontos corretamente.');
+      return;
+    }
+    // Converte string de descontos em array de números
+    const descontos = descontosStr.split(/\s+/).map(d => parseFloat(d));
+    // Verifica se todos os descontos são números válidos
+    if (descontos.some(d => isNaN(d))) {
+      alert('Por favor, insira apenas números válidos nos descontos.');
+      return;
+    }
+    // Aplica cada desconto sequencialmente
+    let final = preco;
+    descontos.forEach(d => {
+      final *= (1 - d / 100);
+    });
+    const economia = preco - final;
+    const descontoTotal = 100 * (economia / preco);
+    // Exibe preço final, economia e desconto total percentual
+    document.getElementById('resultado6').textContent = `Preço final: R$ ${final.toFixed(2)}\nVocê economizou: R$ ${economia.toFixed(2)}\nDesconto total: ${descontoTotal.toFixed(2)}%`;
+  }
+</script>
+</body>
+</html>
